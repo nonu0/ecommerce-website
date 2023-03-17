@@ -1,14 +1,14 @@
 from django.contrib import admin
 from website.models import Customer,Admin
-from auth.extras import delete_patient_data
+from authentication.extras import delete_customer_data
 # Register your models here.
 
 class AccountAdmin(admin.ModelAdmin):
     # name of our db
     using = 'default'
-    list_display = ('id','owner','username',)
-    list_display_link = ('id','owner','username',)
-    list_filter = ('owner','username',)
+    list_display = ('id','customer','username',)
+    list_display_link = ('id','customer','username',)
+    list_filter = ('customer','username',)
     search_fields = ('username',)
     list_per_page = 25
 
@@ -17,10 +17,10 @@ class AccountAdmin(admin.ModelAdmin):
         obj.save(using=self.using)
 
     def delete_model(self, request, obj):
-        email = obj.owner
+        email = obj.customer
         print(email)
         obj.delete(using=self.using)
-        delete_patient_data(email)
+        delete_customer_data(email)
 
         
     def get_queryset(self, request):

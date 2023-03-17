@@ -10,7 +10,7 @@ class Admin(models.Model):
 
 
     def __str__(self):
-        return self.user.username
+        return self.user_admin
 
 class Customer(models.Model):
     customer = models.EmailField(unique=True)

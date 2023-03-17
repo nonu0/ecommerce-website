@@ -1,15 +1,15 @@
 from django.contrib import admin
-from auth.models import User
-from auth.extras import delete_customer_data
+from authentication.models import User
+from authentication.extras import delete_customer_data
 # Register your models here.
 
 
 class AccountAdmin(admin.ModelAdmin):
     # name of our db
     using = 'default'
-    list_display = ('email','username',)
-    list_display_link = ('email','username',)
-    list_filter = ('email','username',)
+    list_display = ('user','username',)
+    list_display_link = ('user','username',)
+    list_filter = ('user','username',)
     search_fields = ('username',)
     list_per_page = 25
 
