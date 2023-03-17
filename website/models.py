@@ -12,7 +12,6 @@ class Admin(models.Model):
     def __str__(self):
         return self.user.username
 
-
 class Customer(models.Model):
     user = models.EmailField(unique=True)
     fname = models.CharField(max_length=20)
