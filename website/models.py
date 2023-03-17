@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Admin(models.Model):
-    user = models.EmailField(unique=True)
+    user_admin = models.EmailField(unique=True)
     full_name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='images')
     phone = models.BigIntegerField()
@@ -13,7 +13,7 @@ class Admin(models.Model):
         return self.user.username
 
 class Customer(models.Model):
-    user = models.EmailField(unique=True)
+    customer = models.EmailField(unique=True)
     fname = models.CharField(max_length=20)
     lname = models.CharField(max_length=20)
     email = models.EmailField()
