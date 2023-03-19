@@ -7,9 +7,9 @@ from authentication.extras import delete_customer_data
 class AccountAdmin(admin.ModelAdmin):
     # name of our db
     using = 'default'
-    list_display = ('user','username',)
-    list_display_link = ('user','username',)
-    list_filter = ('user','username',)
+    list_display = ('email','username',)
+    list_display_link = ('email','username',)
+    list_filter = ('email','username',)
     search_fields = ('username',)
     list_per_page = 25
 
