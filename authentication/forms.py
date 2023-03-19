@@ -7,7 +7,7 @@ class RegisterForm(forms.ModelForm):
     confirm_password = forms.PasswordInput()
     class Meta:
         model = Customer
-        fields = ['fname','lname','email','username','address','password','confirm_password']
+        fields = ['fname','lname','email','username','address']
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
