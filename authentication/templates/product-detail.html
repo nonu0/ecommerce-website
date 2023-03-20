@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%} {{product.title}} {% endblock title %}
+
+
+{% block content%}
+
+<div class="container-detail">
+    <h3>Product:{{product.title}}</h3>
+    <div class="det-row">
+        <div class="img-det">
+            <img src="{{product.image.url}}" alt="" class="img-det">
+                {% for pi in product.productimage_set.all %}
+                <div class="detailed-image">
+                    <img src="{{p.image.url}}" alt="">
+                </div>
+                {% endfor %}
+        </div>
+        <div class="detail-card">
+            <h5>Category:{{product.category}}</h5>
+            <h5>Price:KSH{{product.price}}</h5>
+            <h5>{{product.description}}</h5>
+            <a href="{% url 'website:add_to_cart' product.id %}" class="detail-prod-btn">Add To Cart</a>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
