@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import environ
-
+from datetime import timedelta
 
 # Initialise environment variables
 env = environ.Env()
@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'authentication',
     'website',
 ]
@@ -119,6 +120,22 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 EMAIL_PORT = env('EMAIL_PORT')
+
+
+# rest framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES':[
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME':timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME':timedelta(days=1),
+    'AUTH_HEADER_TYPES':('Bearer',),
+    'AUTH_TOKEN_CLASSES':('rest_framework_simplejwt.tokens.AccessToken',)
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
