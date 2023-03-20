@@ -26,15 +26,14 @@
 					{% for product in product_list %}
 		      		<!-- Start Column 1 -->
 					<div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="{% url 'website:shop' %}">
+						<a class="product-item" href="{% url 'website:product' product.slug %}">
 							<img src="{{ product.image.url }}" class="img-fluid product-thumbnail">
 							<h3 class="product-title">{{product.title}}</h3>
 							<strong class="product-price">{{ product.price }}</strong>
-
+						</a>
 							<span class="icon-cross">
 								<img src="{% static 'images/cross.svg' %}" class="img-fluid">
-							</span>
-						</a>
+								</span>
 					</div> 
 					<!-- End Column 1 -->
 						{% endfor  %}

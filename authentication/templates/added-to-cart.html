@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content%}
+<div class="added-to-cart">
+    Added to cart successfully!
+            <button class="update-cart"><a href="{% url 'website:cart' %}">View Cart</a></button>
+            <button class="update-cart"><a href="{% url 'website:shop' %}">Continue Shopping</a></button>
+
+</div>
+
+{% endblock content %}

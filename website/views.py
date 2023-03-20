@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView ,ListView
-from website.models import Cart, Product
+from website.models import Cart, Product,CartItem
 from django.core.paginator import Paginator
 # Create your views here.
 class EMixin(object):
@@ -44,6 +44,73 @@ class ShopView(EMixin, ListView):
         return context
 
 
+
+class ProductDetailView(EMixin, TemplateView):
+    # model = Product
+    template_name = 'product-detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        url_slug = self.kwargs['slug']
+        product = Product.objects.get(slug=url_slug)
+        # product.view_count += 1
+        product.save()
+        context['product'] = product
+        return context
+
+
+class AddToCartView(TemplateView):
+    template_name = 'added-to-cart.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # get product id
+        product_id = self.kwargs['pro_id']
+        # get object from id
+        product_obj = Product.objects.get(id=product_id)
+        # check if there is a cart 
+        cart_id = self.request.session.get('cart_id')
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+            this_product_in_cart = cart_obj.cartitem_set.filter(
+                Product=product_obj
+            )
+            # product already in cart
+            if this_product_in_cart.exists():
+                cartitem = this_product_in_cart.last()
+                cartitem.quantity += 1
+                cartitem.rate = product_obj.price
+                cartitem.sub_total += product_obj.price
+                cartitem.save()
+
+            # product is not in cart
+            else:
+                cartitem = CartItem.objects.create(
+                    cart = cart_obj,rate=product_obj.price,product=product_obj,quantity=1,sub_total=product_obj.price
+                )
+                cart_obj.total += product_obj.price
+                cart_obj.save()
+
+        else:
+            cart_obj = Cart.objects.create(total=0)
+            self.request.session['cart_id'] = cart_obj.id
+            cartitem = CartItem.objects.create(
+                cart=cart_obj, rate=product_obj.price, product=product_obj, quantity=1, sub_total=product_obj.price)
+            cart_obj.total += product_obj.price
+            cart_obj.save()
+        return context
+    
+class CartView(TemplateView):
+    template_name = 'cart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart_id = self.request.session.get('cart_id', None)
+        if cart_id:
+            cart = Cart.objects.get(id=cart_id)
+        else:
+            cart = None
+        context['cart'] = cart
+        return context
 class ServicesView(TemplateView):
     template_name = 'services.html'
 
