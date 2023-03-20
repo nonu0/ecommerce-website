@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView ,ListView
 from website.models import Cart, Product
+from django.core.paginator import Paginator
 # Create your views here.
 class EMixin(object):
     def dispatch(self, request, *args, **kwargs):
@@ -30,17 +31,17 @@ class ContactView(TemplateView):
 
 
 class ShopView(EMixin, ListView):
-    # model = Product
+    model = Product
     template_name = 'shop.html'
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         all_products = Product.objects.all()
-#         paginator = Paginator(all_products, 12)
-#         page_number = self.request.GET.get('page')
-#         product_list = paginator.get_page(page_number)
-#         context['product_list'] = product_list
-#         return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_products = Product.objects.all()
+        paginator = Paginator(all_products, 12)
+        page_number = self.request.GET.get('page')
+        product_list = paginator.get_page(page_number)
+        context['product_list'] = product_list
+        return context
 
 
 class ServicesView(TemplateView):

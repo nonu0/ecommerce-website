@@ -1,5 +1,5 @@
 from django.contrib import admin
-from website.models import Customer,Admin
+from website.models import Customer,Admin,Category,Cart,CartItem,Order,Product,ProductImage
 from authentication.extras import delete_customer_data
 # Register your models here.
 
@@ -34,3 +34,9 @@ class AccountAdmin(admin.ModelAdmin):
 
 admin.site.register(Customer,AccountAdmin)
 admin.site.register(Admin)
+admin.site.register(Category)
+admin.site.register(Product)
+admin.site.register(ProductImage)
+admin.site.register(Cart)
+admin.site.register(CartItem)
+admin.site.register(Order)
