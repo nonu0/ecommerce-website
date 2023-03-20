@@ -1,6 +1,16 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView 
+from django.views.generic import TemplateView ,ListView
+from website.models import Cart, Product
 # Create your views here.
+class EMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        cart_id = self.request.session.get('cart_id', None)
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+            if request.user.is_authenticated and request.user.customer:
+                cart_obj.customer = request.user.customer
+                cart_obj.save()
+        return super().dispatch(request, *args, **kwargs)
 
 class HomeView(TemplateView):
     template_name = 'index.html'
@@ -18,8 +28,19 @@ class ContactView(TemplateView):
     template_name = 'contact.html'
 
 
-class ShopView(TemplateView):
+
+class ShopView(EMixin, ListView):
+    # model = Product
     template_name = 'shop.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         all_products = Product.objects.all()
+#         paginator = Paginator(all_products, 12)
+#         page_number = self.request.GET.get('page')
+#         product_list = paginator.get_page(page_number)
+#         context['product_list'] = product_list
+#         return context
 
 
 class ServicesView(TemplateView):
@@ -62,19 +83,6 @@ class AboutView(TemplateView):
 # class AddedToCart(TemplateView):
 #     template_name = 'added-to-cart'
 
-
-# class StoreView(EMixin, ListView):
-#     model = Product
-#     template_name = 'store.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         all_products = Product.objects.all()
-#         paginator = Paginator(all_products, 12)
-#         page_number = self.request.GET.get('page')
-#         product_list = paginator.get_page(page_number)
-#         context['product_list'] = product_list
-#         return context
 
 
 # class AllProductsView(EMixin, TemplateView):
