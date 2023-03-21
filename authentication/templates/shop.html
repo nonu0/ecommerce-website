@@ -30,12 +30,10 @@
 							<img src="{{ product.image.url }}" class="img-fluid product-thumbnail">
 							<h3 class="product-title">{{product.title}}</h3>
 							<strong class="product-price">{{ product.price }}</strong>
-								<a href="{% url 'website:add_to_cart' product.id %}">
 
 							<span class="icon-cross">
 								<img src="{% static 'images/cross.svg' %}" class="img-fluid">
 								</span>
-								</a>
 						</a>
 
 					</div> 

@@ -60,7 +60,7 @@
         
                           </td>
                           <td>{{item.sub_total}}</td>
-                          <td><a href="#" class="btn btn-black btn-sm">X</a></td>
+                          <td><a href="{% url 'website:managecart' item.id %}?action=rmv" class="btn btn-black btn-sm">X</a></td>
                         </tr>
                       </tbody>
                       {% endfor %}

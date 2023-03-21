@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView ,ListView
+from django.shortcuts import render,redirect
+from django.views.generic import TemplateView ,ListView,View
 from website.models import Cart, Product,CartItem
 from django.core.paginator import Paginator
 # Create your views here.
@@ -111,6 +111,40 @@ class CartView(TemplateView):
             cart = None
         context['cart'] = cart
         return context
+    
+class ManageCartView(View):
+    def get(self,request,**kwargs):
+        product_id = self.kwargs['prod_id']
+        action = request.GET.get('action')
+        product_obj = CartItem.objects.get(id=product_id)
+        cart_obj = product_obj.cart
+        if action == 'inc':
+            product_obj.quantity += 1
+            product_obj.sub_total += product_obj.price
+            product_obj.save()
+            cart_obj.total += product_obj.rate
+            cart_obj.save()
+        elif action == 'dec':
+            product_obj.quantity -= 1
+            product_obj.sub_total -= product_obj.price
+            product_obj.save()
+            cart_obj.total -=product_obj.rate
+            cart_obj.save()
+            if product_obj.quantity == 0:
+                product_obj.delete()
+        elif action == 'rmv':
+            cart_obj.total -= product_obj.sub_total
+            cart_obj.save()
+            product_obj.delete()
+        else:
+            pass
+        return redirect('website:cart')
+
+
+
+
+
+
 class ServicesView(TemplateView):
     template_name = 'services.html'
 
