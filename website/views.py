@@ -72,7 +72,7 @@ class AddToCartView(TemplateView):
         if cart_id:
             cart_obj = Cart.objects.get(id=cart_id)
             this_product_in_cart = cart_obj.cartitem_set.filter(
-                Product=product_obj
+                product=product_obj
             )
             # product already in cart
             if this_product_in_cart.exists():
