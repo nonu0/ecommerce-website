@@ -42,7 +42,6 @@
                           <td class="product-thumbnail">
                             <img src="{{ item.product.image.url }}" alt="Image" class="img-fluid">
                           </td>
-                          {{ item.product.image.url }}
                           <td class="product-name">
                             <h2 class="h5 text-black">{{item.product.title}}</h2>
                           </td>
@@ -50,11 +49,11 @@
                           <td>
                             <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
                               <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
+                                <a href="{% url 'website:managecart' item.id %}?action=dec"><button class="btn btn-outline-black decrease" type="button">&minus;</button></a>
                               </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                              <input type="text" class="form-control text-center quantity-amount" value="{{item.quantity}}" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
                               <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
+                                <a href="{% url 'website:managecart' item.id %}?action=inc"><button class="btn btn-outline-black increase" type="button">&plus;</button></a>
                               </div>
                             </div>
         
@@ -73,9 +72,11 @@
                 <div class="col-md-6">
                   <div class="row mb-5">
                     <div class="col-md-6 mb-3 mb-md-0">
-                      <a href="{% url 'website:cart' %}">
-                      <button class="btn btn-black btn-sm btn-block">Update Cart</button>
+                      {% if cart.cartitem_set.all %}
+                      <a href="{% url 'website:emptycart' %}">
+                      <button class="btn btn-black btn-sm btn-block">Empty Cart</button>
                       </a>
+                      {%  endif %}
                     </div>
                     <div class="col-md-6">
                       <a href="{% url 'website:shop' %}">

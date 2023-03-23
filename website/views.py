@@ -68,7 +68,7 @@ class AddToCartView(TemplateView):
         # get object from id
         product_obj = Product.objects.get(id=product_id)
         # check if there is a cart 
-        cart_id = self.request.session.get('cart_id')
+        cart_id = self.request.session.get('cart_id',None)
         if cart_id:
             cart_obj = Cart.objects.get(id=cart_id)
             this_product_in_cart = cart_obj.cartitem_set.filter(
@@ -120,13 +120,13 @@ class ManageCartView(View):
         cart_obj = product_obj.cart
         if action == 'inc':
             product_obj.quantity += 1
-            product_obj.sub_total += product_obj.price
+            product_obj.sub_total += product_obj.rate
             product_obj.save()
             cart_obj.total += product_obj.rate
             cart_obj.save()
         elif action == 'dec':
             product_obj.quantity -= 1
-            product_obj.sub_total -= product_obj.price
+            product_obj.sub_total -= product_obj.rate
             product_obj.save()
             cart_obj.total -=product_obj.rate
             cart_obj.save()
@@ -140,6 +140,16 @@ class ManageCartView(View):
             pass
         return redirect('website:cart')
 
+
+class EmptyCartView(View):
+    def get(self,request,**kwargs):
+        cart_id = request.session.get('cart_id',None)
+        if cart_id:
+            cart = Cart.objects.get(id=cart_id)
+            cart.cartitem_set.all().delete()
+            cart.total = 0
+            cart.save()
+            return redirect('website:cart')
 
 
 
