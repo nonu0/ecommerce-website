@@ -74,10 +74,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': env('DATABASE_NAME'),
+       'NAME': 'ecom_db',
        'USER': env('DATABASE_USER'),
-       'PASSWORD': env('DATABASE_PASSWORD'),
-       'HOST': env('DATABASE_HOST'),
+       'PASSWORD': '1234',
+       'HOST': 'localhost',
        'PORT': env('DATABASE_PORT'),
     }
 }
