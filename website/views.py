@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.views.generic import TemplateView ,ListView,View
-from website.models import Cart, Product,CartItem
+from website.models import Cart, Product,CartItem,Customer,Order
 from django.core.paginator import Paginator
 # Create your views here.
 class EMixin(object):
@@ -154,6 +154,24 @@ class EmptyCartView(View):
 
 
 
+class ProfileView(TemplateView):
+    template_name = 'profile.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and Customer.objects.filter(user=request.user).exists():
+            pass
+        else:
+            return redirect('/login?next=/checkout')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        customer = self.request.user.customer
+        context['customer'] = customer
+        orders = Order.objects.filter(cart__customer=customer).order_by('-id')
+        context['orders'] = orders
+        return context
+
 
 class ServicesView(TemplateView):
     template_name = 'services.html'
@@ -166,154 +184,6 @@ class CheckoutView(TemplateView):
 class AboutView(TemplateView):
     template_name = 'about.html'
 
-
-#     from django.shortcuts import render, redirect
-# from django.views.generic import TemplateView, ListView, DetailView, View, CreateView, FormView
-# from django.contrib.auth import authenticate, login, logout
-# from django.urls import reverse_lazy
-# from django.db.models import Q
-# from django.core.paginator import Paginator
-# from .forms import *
-# from .models import *
-
-
-# # Create your views here.
-# class EMixin(object):
-#     def dispatch(self, request, *args, **kwargs):
-#         cart_id = self.request.session.get('cart_id', None)
-#         if cart_id:
-#             cart_obj = Cart.objects.get(id=cart_id)
-#             if request.user.is_authenticated and request.user.customer:
-#                 cart_obj.customer = request.user.customer
-#                 cart_obj.save()
-#         return super().dispatch(request, *args, **kwargs)
-
-
-# class HomeView(TemplateView):
-#     template_name = 'home.html'
-
-# class AddedToCart(TemplateView):
-#     template_name = 'added-to-cart'
-
-
-
-# class AllProductsView(EMixin, TemplateView):
-#     template_name = 'all-products.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['all_categories'] = Category.objects.all()
-#         return context
-
-
-# class ProductDetailView(EMixin, TemplateView):
-#     # model = Product
-#     template_name = 'product-detail.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         url_slug = self.kwargs['slug']
-#         product = Product.objects.get(slug=url_slug)
-#         # product.view_count += 1
-#         product.save()
-#         context['product'] = product
-#         return context
-
-
-# class AddToCartView(EMixin, TemplateView):
-#     template_name = 'added-to-cart.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         #get id
-#         item_id = self.kwargs['pro_id']
-#         #get object
-#         product_obj = Product.objects.get(id=item_id)
-#         # #check if cart exist
-#         cart_id = self.request.session.get('cart_id', None)
-#         if cart_id:
-#             cart_obj = Cart.objects.get(id=cart_id)
-#             this_product_in_cart = cart_obj.cartitem_set.filter(
-#                 product=product_obj)
-#             # item already in cart
-#             if this_product_in_cart.exists():
-#                 cartitem = this_product_in_cart.last()
-#                 cartitem.quantity += 1
-#                 cartitem.rate = product_obj.price
-#                 cartitem.sub_total += product_obj.price
-#                 cartitem.save()
-#                 cart_obj.total += product_obj.price
-#                 cart_obj.save()
-#             # new item added in cart
-#             else:
-#                 cartitem = CartItem.objects.create(
-#                     cart=cart_obj, rate=product_obj.price, product=product_obj, quantity=1, sub_total=product_obj.price)
-#                 cart_obj.total += product_obj.price
-#                 cart_obj.save()
-#         else:
-#             cart_obj = Cart.objects.create(total=0)
-#             self.request.session['cart_id'] = cart_obj.id
-#             cartitem = CartItem.objects.create(
-#                 cart=cart_obj, rate=product_obj.price, product=product_obj, quantity=1, sub_total=product_obj.price)
-#             cart_obj.total += product_obj.price
-#             cart_obj.save()
-#         return context
-
-
-# class CartView(EMixin, TemplateView):
-#     template_name = 'cart.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         cart_id = self.request.session.get('cart_id', None)
-#         if cart_id:
-#             cart = Cart.objects.get(id=cart_id)
-#         else:
-#             cart = None
-#         context['cart'] = cart
-#         return context
-
-
-# class ManageCartView(EMixin, View):
-#     def get(self, request, **kwargs):
-#         print('manage cart view')
-#         cp_id = self.kwargs['cp_id']
-#         action = request.GET.get('action')
-#         print(cp_id, action)
-#         cp_obj = CartItem.objects.get(id=cp_id)
-#         cart_obj = cp_obj.cart
-#         if action == 'inc':
-#             cp_obj.quantity += 1
-#             cp_obj.sub_total += cp_obj.rate
-#             cp_obj.save()
-#             cart_obj.total += cp_obj.rate
-#             cart_obj.save()
-#         elif action == 'dcr':
-#             cp_obj.quantity -= 1
-#             cp_obj.sub_total -= cp_obj.rate
-#             cp_obj.save()
-#             cart_obj.total -= cp_obj.rate
-#             cart_obj.save()
-#             if cp_obj.quantity == 0:
-#                 cp_obj.delete()
-#         elif action == 'rmv':
-#             cart_obj.total -= cp_obj.sub_total
-#             cart_obj.save()
-#             cp_obj.delete()
-#         else:
-#             pass
-#         return redirect('website:cart')
-
-
-# class EmptyCartView(EMixin, TemplateView):
-#     def get(self, request, *args, **kwargs):
-#         cart_id = request.session.get('cart_id', None)
-#         if cart_id:
-#             cart = Cart.objects.get(id=cart_id)
-#             cart.cartitem_set.all().delete()
-#             cart.total = 0
-#             cart.save()
-#         return redirect('website:cart')
 
 
 # class CheckoutView(EMixin, CreateView):
@@ -352,77 +222,6 @@ class AboutView(TemplateView):
 #             return redirect('website:cart')
 #         return super().form_valid(form)
 
-
-# class RegisterView(CreateView):
-#     template_name = 'register.html'
-#     form_class = RegisterForm
-#     success_url = reverse_lazy('website:store')
-
-#     def form_valid(self, form):
-#         user_name = form.cleaned_data.get('username')
-#         password = form.cleaned_data.get('password')
-#         email = form.cleaned_data.get('email')
-#         user = User.objects.create_user(user_name, email, password)
-#         form.instance.user = user
-#         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
-#         return super().form_valid(form)
-
-#     def get_success_url(self):
-#         if 'next' in self.request.GET:
-#             next_url = self.request.GET.get('next')
-#             return next_url
-#         else:
-#             return self.success_url
-
-
-# class LoginView(FormView):
-#     template_name = 'login.html'
-#     form_class = LoginForm
-#     success_url = reverse_lazy('website:store')
-
-#     def form_valid(self, form):
-#         uname = form.cleaned_data.get('username')
-#         pword = form.cleaned_data['password']
-#         usr = authenticate(username=uname, password=pword)
-#         if usr is not None and usr.customer:
-#             login(self.request, usr)
-#         else:
-#             return render(self.request, self.template_name, {'form': self.form_class, 'error': 'invalid credentials'})
-#         return super().form_valid(form)
-
-#     def get_success_url(self):
-#         if 'next' in self.request.GET:
-#             next_url = self.request.GET.get('next')
-#             return next_url
-#             print('next url')
-#         else:
-#             return self.success_url
-#             print('success url')
-
-
-# class LogoutView(View):
-#     def get(self, request):
-#         logout(request)
-#         return redirect('website:home')
-
-
-# class ProfileView(TemplateView):
-#     template_name = 'profile.html'
-
-#     def dispatch(self, request, *args, **kwargs):
-#         if request.user.is_authenticated and Customer.objects.filter(user=request.user).exists():
-#             pass
-#         else:
-#             return redirect('/login?next=/checkout')
-#         return super().dispatch(request, *args, **kwargs)
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         customer = self.request.user.customer
-#         context['customer'] = customer
-#         orders = Order.objects.filter(cart__customer=customer).order_by('-id')
-#         context['orders'] = orders
-#         return context
 
 
 # class OrderDetailView(DetailView):
