@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content%}
+
+<div class="container-checkout">
+    <div class="checkout-form">
+        <h2>My profile</h2>
+        <p>First Name:{{customer.fname}}</p>
+        <p>UserName:{{customer.username}}</p>
+        <p>Last name:{{customer.lname}}</p>
+        <p>Email:{{customer.email}}</p>
+        <p>Home Address:{{customer.address}}</p>
+        <p>Joined:{{customer.joined_on}}</p>
+    </div>
+
+    <div class="box-element-cart">
+        <h2>my history</h2>
+
+        <table class="table-head">
+            <tr>
+                <th>SN</th>
+                <th>Order Id</th>
+                <th>Amount</th>
+                <th>Ordered On</th>
+                <th>Status</th>
+            </tr>
+        {% for order in orders %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+            <td> <a href="{% url 'website:order_detail' order.pk %}">#ORDER{{order.id}}</a></td>
+                <td>KSH {{order.total}}</td>
+                <td>{{order.created | timesince}}</td>
+                <td>{{order.order_status}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+
+    </div>
+</div>
+
+{% endblock content %}
