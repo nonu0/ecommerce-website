@@ -158,10 +158,10 @@ class ProfileView(TemplateView):
     template_name = 'profile.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and Customer.objects.filter(user=request.user).exists():
+        if request.user.is_authenticated and Customer.objects.filter(customer=request.user).exists():
             pass
         else:
-            return redirect('/login?next=/checkout')
+            return redirect('authentication:login')
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
