@@ -55,7 +55,6 @@ class RegisterView(FormView):
         else:
             return ValidationError(self.request,'Passwords must match')
 
-
 def activate_user(request,uidb64,token):
     try:
         uid = force_bytes(urlsafe_base64_decode(uidb64))
