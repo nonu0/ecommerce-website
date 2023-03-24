@@ -21,8 +21,13 @@
                 <li><a class="nav-link" href="{% url 'website:services' %}">Services</a></li>
                 <li><a class="nav-link" href="{% url 'website:blog' %}">Blog</a></li>
                 <li><a class="nav-link" href="{% url 'website:contact' %}">Contact us</a></li>
+                {% if request.user.is_authenticated %}
+                <p class="nav-link"> Welcome {{user.username}}</p>
+                <li><a class="nav-link" href="{% url 'authentication:login' %}">LogOut</a></li>
+                {% else %}
                 <li><a class="nav-link" href="{% url 'authentication:login' %}">Login</a></li>
                 <li><a class="nav-link" href="{% url 'authentication:register' %}">Join us</a></li>
+                {% endif %}
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
