@@ -45,7 +45,7 @@
 		                <option value="9">Dominican Republic</option>    
 		              </select>
 		            </div>
-		            <div class="form-group row">
+		            <!-- <div class="form-group row">
 		              <div class="col-md-6">
 		                <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
 		                <input type="text" class="form-control" id="c_fname" name="c_fname">
@@ -54,9 +54,12 @@
 		                <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
 		                <input type="text" class="form-control" id="c_lname" name="c_lname">
 		              </div>
-		            </div>
-
-		            <div class="form-group row">
+		            </div> -->
+					<div class="form-group">
+						{{form.as_p}}
+						<a href=""><button type="submit">Complete Checkout</button></a>
+					</div>
+		            <!-- <div class="form-group row">
 		              <div class="col-md-12">
 		                <label for="c_companyname" class="text-black">Company Name </label>
 		                <input type="text" class="form-control" id="c_companyname" name="c_companyname">
@@ -94,7 +97,7 @@
 		                <label for="c_phone" class="text-black">Phone <span class="text-danger">*</span></label>
 		                <input type="text" class="form-control" id="c_phone" name="c_phone" placeholder="Phone Number">
 		              </div>
-		            </div>
+		            </div> -->
 
 		            <div class="form-group">
 		              <label for="c_create_account" class="text-black" data-bs-toggle="collapse" href="#create_an_account" role="button" aria-expanded="false" aria-controls="create_an_account"><input type="checkbox" value="1" id="c_create_account"> Create an account?</label>
@@ -133,11 +136,11 @@
 
 		                  <div class="form-group row">
 		                    <div class="col-md-6">
-		                      <label for="c_diff_fname" class="text-black">First Name <span class="text-danger">*</span></label>
+		                      <label for="{{form.fname.id_for_label}}" class="text-black">First Name <span class="text-danger">*</span></label>
 		                      <input type="text" class="form-control" id="c_diff_fname" name="c_diff_fname">
 		                    </div>
 		                    <div class="col-md-6">
-		                      <label for="c_diff_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
+		                      <label for="{{form.lname.id_for_label}}" class="text-black">Last Name <span class="text-danger">*</span></label>
 		                      <input type="text" class="form-control" id="c_diff_lname" name="c_diff_lname">
 		                    </div>
 		                  </div>
@@ -222,14 +225,15 @@
 		                    <th>Product</th>
 		                    <th>Total</th>
 		                  </thead>
+						  {% for item in cart.cartitem_set.all %}
 		                  <tbody>
 		                    <tr>
-		                      <td>Top Up T-Shirt <strong class="mx-2">x</strong> 1</td>
-		                      <td>$250.00</td>
+		                      <td>Top Up T-Shirt <strong class="mx-2">x</strong> {{item.quantity}}</td>
+		                      <td>ksh.{{item.price}}</td>
 		                    </tr>
 		                    <tr>
-		                      <td>Polo Shirt <strong class="mx-2">x</strong>   1</td>
-		                      <td>$100.00</td>
+		                      <td>Polo Shirt <strong class="mx-2">x</strong>   {{item.quantity}}</td>
+		                      <td>ksh.{{item.price}}</td>
 		                    </tr>
 		                    <tr>
 		                      <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
@@ -240,6 +244,7 @@
 		                      <td class="text-black font-weight-bold"><strong>$350.00</strong></td>
 		                    </tr>
 		                  </tbody>
+						  {% endfor %}
 		                </table>
 
 		                <div class="border p-3 mb-3">

@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect
-from django.views.generic import TemplateView ,ListView,View
+from django.views.generic import TemplateView ,ListView,View,CreateView
 from website.models import Cart, Product,CartItem,Customer,Order
 from django.core.paginator import Paginator
+from django.urls import reverse_lazy
+from website.forms import *
 # Create your views here.
 class EMixin(object):
     def dispatch(self, request, *args, **kwargs):
@@ -186,41 +188,40 @@ class AboutView(TemplateView):
 
 
 
-# class CheckoutView(EMixin, CreateView):
-#     template_name = 'checkout.html'
-#     form_class = CheckoutForm
-#     success_url = reverse_lazy('website:home')
+class CheckoutView(EMixin, CreateView):
+    template_name = 'checkout.html'
+    form_class = CheckoutForm
+    success_url = reverse_lazy('website:home')
 
-#     def dispatch(self, request, *args, **kwargs):
-#         if request.user.is_authenticated and request.user.customer:
-#             pass
-#         else:
-#             return redirect('/login?next=/checkout')
-#         return super().dispatch(request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated and request.user.customer:
+    #         pass
+    #     else:
+    #         return redirect('authentication:login')
+    #     return super().dispatch(request, *args, **kwargs)
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         cart_id = self.request.session.get('cart_id', None)
-#         if cart_id:
-#             cart_obj = Cart.objects.get(id=cart_id)
-#         else:
-#             cart_obj = None
-#         context['cart'] = cart_obj
-#         return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart_id = self.request.session.get('cart_id', None)
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+        else:
+            cart_obj = None
+        context['cart'] = cart_obj
+        return context
 
-#     def form_valid(self, form):
-#         cart_id = self.request.session.get('cart_id', None)
-#         if cart_id:
-#             cart_obj = Cart.objects.get(id=cart_id)
-#             form.instance.cart = cart_obj
-#             form.instance.sub_total = cart_obj.total
-#             form.instance.total = cart_obj.total
-#             form.instance.order_status = 'Order Received'
-#             del self.request.session['cart_id']
-
-#         else:
-#             return redirect('website:cart')
-#         return super().form_valid(form)
+    def form_valid(self, form):
+        cart_id = self.request.session.get('cart_id', None)
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+            form.instance.cart = cart_obj
+            form.instance.sub_total = cart_obj.total
+            form.instance.total = cart_obj.total
+            form.instance.order_status = 'Order Received'
+            del self.request.session['cart_id']
+        else:
+            return redirect('website:cart')
+        return super().form_valid(form)
 
 
 
